@@ -1,9 +1,9 @@
 import React from 'react'
 import userGroup from "../assets/user_group.png";
-import Aitools from './Aitools';
-import Plan from './Plan';
+import { useNavigate } from 'react-router-dom';
 
 const Hero = () => {
+    const navigate = useNavigate()
     return (
         <div className="px-4 sm:px-10 md:px-16 lg:px-20 xl:px-32 relative inline-flex flex-col w-full justify-center bg-[url('/src/assets/gradientBackground.png')] bg-cover bg-no-repeat min-h-screen">
             
@@ -23,7 +23,7 @@ const Hero = () => {
 
             {/* button here */}
             <div className='flex flex-col sm:flex-row justify-center items-center text-center gap-4 sm:gap-5 mt-6'>
-                <button className='py-3 sm:py-4 px-8 sm:px-10 rounded-3xl sm:rounded-4xl cursor-pointer active:scale-95 transition-all hover:scale-102 shadow-2xl text-white bg-primary font-thin'>
+                <button onClick={()=> navigate('/ai')} className='py-3 sm:py-4 px-8 sm:px-10 rounded-3xl sm:rounded-4xl cursor-pointer active:scale-95 transition-all hover:scale-102 shadow-2xl text-white bg-primary font-thin'>
                     start creating now
                 </button>
                 <button className='py-3 sm:py-4 px-8 sm:px-10 rounded-3xl sm:rounded-4xl shadow-2xl cursor-pointer active:scale-95 transition-all hover:scale-102 text-black bg-white font-thin'>

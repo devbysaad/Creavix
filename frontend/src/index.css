@@ -7,4 +7,13 @@
 
 @theme{
   --color-primary:#5044E5
-} 
+}
+#scroll-container {
+  overflow: hidden;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}

@@ -1,12 +1,14 @@
 import React from 'react'
+import { ScrollProvider } from './context/ScrollContext'
 import MainRouting from './router/mainRouting'
-import Navbar from './components/Navbar'
 
 const App = () => {
   return (
-    <div>
+    <>
+    {/* <ScrollProvider> */}
       <MainRouting />
-    </div>
+    {/* </ScrollProvider> */}
+    </>
   )
 }
 
