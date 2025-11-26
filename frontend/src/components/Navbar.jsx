@@ -9,7 +9,7 @@ const Navbar = () => {
     const { openSignIn } = useClerk();
 
     return (
-        <nav className="fixed z-50 backdrop-blur-2xl flex justify-center items-center w-full py-4">
+        <nav className="fixed z-50 w-full backdrop-blur-md bg-black/70 flex justify-center items-center py-4">
             <div className="flex items-center justify-between w-full max-w-7xl px-4 sm:px-10">
                 
                 {/* Logo */}
@@ -28,7 +28,7 @@ const Navbar = () => {
                         <UserButton
                             appearance={{
                                 elements: {
-                                    rootBox: "rounded-full border border-gray-300 hover:bg-gray-100 transition p-1",
+                                    rootBox: "rounded-full border border-gray-700 hover:bg-gray-800 transition p-1",
                                     avatarBox: "w-10 h-10",
                                 },
                             }}
@@ -37,7 +37,7 @@ const Navbar = () => {
                         <button
                             onClick={() => openSignIn()}
                             type="button"
-                            className="py-2 sm:py-2.5 text-sm sm:text-base cursor-pointer active:scale-95 transition-all hover:scale-102 flex items-center gap-2 bg-primary px-6 sm:px-10 rounded-full text-white hover:bg-blue-700"
+                            className="py-2 sm:py-2.5 text-sm sm:text-base cursor-pointer active:scale-95 transition-all hover:scale-102 flex items-center gap-2 bg-indigo-600 px-6 sm:px-10 rounded-full text-white hover:bg-indigo-500"
                         >
                             Get Started <ArrowRight className="w-4 h-4" />
                         </button>
