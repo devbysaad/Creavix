@@ -7,86 +7,113 @@ const WriteArticle = () => {
     const [article, setArticle] = useState('');
     const [isLoading, setIsLoading] = useState(false);
 
-    // --- Theme Classes ---
-    const mainBackground = 'h-[100%] m-5  overflow-y-scroll p-6 bg-black';
-    const panelClasses = 'bg-gray-900 border border-gray-800 rounded-xl p-6 h-full shadow-lg';
-    const inputClasses = 'w-full p-3 rounded-lg bg-gray-800 border border-gray-700 text-white placeholder-gray-500 focus:ring-indigo-500 focus:border-indigo-500';
-    // Blue/Cyan Gradient for Text Generation Actions
-    const primaryButtonClass = 'w-full py-3 mt-6 rounded-lg font-semibold transition-all text-white bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400';
-    const secondaryText = 'text-gray-400';
-    const outputContent = 'text-gray-300 min-h-[300px]';
-
     const handleGenerate = () => {
-        // Mock generation logic
+        // Placeholder function - implement your API call here
         setIsLoading(true);
         setTimeout(() => {
-            setArticle(`## The Power of ${topic}\n\nThis is a fully AI-generated article demonstrating the **dark theme** and **responsive layout** of the application. The content area is scrollable and supports Markdown rendering for easy reading.`);
+            setArticle(`# ${topic}\n\nThis is a placeholder article. Implement your API call to generate real content.`);
             setIsLoading(false);
         }, 2000);
     };
 
     return (
-        <div className={mainBackground}>
-            <h1 className='text-3xl font-bold text-white mb-6'>
-                Write Full Article 📝
-            </h1>
-            
-            <div className='flex flex-col  h-[80] lg:flex-row gap-6 '>
-                
-                {/* Input Panel - Responsive width */}
-                <div className='w-full lg:w-1/3'>
-                    <div className={panelClasses}>
-                        <h2 className='text-xl font-semibold text-white mb-4'>Article Parameters</h2>
-                        
-                        <label htmlFor="topic" className={`block text-sm font-medium mb-2 ${secondaryText}`}>
-                            Topic / Keyword
-                        </label>
-                        <input
-                            id="topic"
-                            type="text"
-                            placeholder="e.g., The future of AI in content creation"
-                            className={inputClasses}
-                            value={topic}
-                            onChange={(e) => setTopic(e.target.value)}
-                        />
-
-                        <label htmlFor="style" className={`block text-sm font-medium mt-4 mb-2 ${secondaryText}`}>
-                            Writing Style
-                        </label>
-                        <select
-                            id="style"
-                            className={inputClasses}
-                        >
-                            <option className='bg-gray-900'>Professional</option>
-                            <option className='bg-gray-900'>Casual</option>
-                            <option className='bg-gray-900'>Technical</option>
-                        </select>
-
-                        <button 
-                            onClick={handleGenerate} 
-                            disabled={isLoading}
-                            className={`${primaryButtonClass} ${isLoading ? 'opacity-60 cursor-not-allowed' : ''}`}
-                        >
-                            {isLoading ? (
-                                <span className="flex items-center justify-center gap-2">
-                                    Generating... <Sparkles className='w-4 h-4 animate-pulse' />
-                                </span>
-                            ) : "Generate Article"}
-                        </button>
+        <div className="h-full overflow-y-auto p-6 sm:p-8 bg-white">
+            <div className="max-w-7xl mx-auto h-full flex flex-col">
+                <div className="flex items-center gap-4 mb-8 pb-6 border-b-4 border-black">
+                    <div className="p-3 bg-blue-600 border-4 border-black">
+                        <Sparkles className="w-8 h-8 text-white" />
                     </div>
+                    <h1 className='text-2xl sm:text-3xl font-mono font-black text-black tracking-tight uppercase'>
+                        Write Full Article
+                    </h1>
                 </div>
 
-                {/* Output Panel - Responsive width and overflow */}
-                <div className='w-full lg:w-2/3'>
-                    <div className={`${panelClasses} overflow-y-auto`}>
-                        <h2 className='text-xl font-semibold text-white mb-4'>Generated Content</h2>
-                        
-                        <div className={outputContent}>
-                            {article ? (
-                                <Markdown className="markdown-dark-theme">{article}</Markdown>
-                            ) : (
-                                <p className="text-gray-500 italic">Your generated article will appear here...</p>
-                            )}
+                <div className='flex flex-col lg:flex-row gap-8 flex-1 min-h-0'>
+
+                    {/* Input Panel */}
+                    <div className='w-full lg:w-1/3 flex flex-col gap-6'>
+                        <div className="bg-white border-4 border-black rounded-none p-8 shadow-[8px_8px_0_0_#000000]">
+                            <h2 className='text-lg font-mono font-black text-black mb-8 flex items-center gap-2 uppercase tracking-wider border-b-2 border-black pb-3'>
+                                Article Parameters
+                            </h2>
+
+                            <div className="space-y-6">
+                                <div>
+                                    <label htmlFor="topic" className="block text-sm font-mono font-bold text-black mb-3 uppercase tracking-wide">
+                                        Topic / Keyword
+                                    </label>
+                                    <input
+                                        id="topic"
+                                        type="text"
+                                        placeholder="E.G., THE FUTURE OF AI"
+                                        className="w-full p-4 rounded-none bg-white border-4 border-black text-black placeholder-black/40 focus:border-blue-600 transition-all text-sm font-mono uppercase tracking-wide focus:outline-none"
+                                        value={topic}
+                                        onChange={(e) => setTopic(e.target.value)}
+                                    />
+                                </div>
+
+                                <div>
+                                    <label htmlFor="style" className="block text-sm font-mono font-bold text-black mb-3 uppercase tracking-wide">
+                                        Writing Style
+                                    </label>
+                                    <div className="relative">
+                                        <select
+                                            id="style"
+                                            className="w-full p-4 rounded-none bg-white border-4 border-black text-black focus:border-blue-600 appearance-none cursor-pointer font-mono font-bold uppercase tracking-wide focus:outline-none"
+                                        >
+                                            <option className='bg-white'>Professional</option>
+                                            <option className='bg-white'>Casual</option>
+                                            <option className='bg-white'>Technical</option>
+                                            <option className='bg-white'>Creative</option>
+                                        </select>
+                                        <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-black">
+                                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M19 9l-7 7-7-7"></path></svg>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <button
+                                    onClick={handleGenerate}
+                                    disabled={isLoading}
+                                    className={`w-full py-4 rounded-none font-mono font-black uppercase tracking-widest text-white shadow-[4px_4px_0_0_#000000] transition-all duration-200 flex items-center justify-center gap-2 border-4
+                                        ${isLoading
+                                            ? 'bg-black border-black cursor-not-allowed opacity-70'
+                                            : 'bg-black border-black hover:bg-blue-600 hover:border-blue-600 hover:shadow-[6px_6px_0_0_#000000] hover:-translate-x-1 hover:-translate-y-1 active:scale-95'
+                                        }`}
+                                >
+                                    {isLoading ? (
+                                        <>
+                                            Generating... <Sparkles className='w-5 h-5 animate-spin' />
+                                        </>
+                                    ) : (
+                                        <>
+                                            Generate Article <Sparkles className='w-5 h-5' />
+                                        </>
+                                    )}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Output Panel */}
+                    <div className='w-full lg:w-2/3 flex-1 min-h-[500px] lg:min-h-0'>
+                        <div className="h-full bg-white border-4 border-black rounded-none p-8 shadow-[8px_8px_0_0_#000000] overflow-y-auto">
+                            <h2 className='text-lg font-mono font-black text-black mb-8 sticky top-0 bg-white py-2 -mt-2 z-10 uppercase tracking-wider border-b-2 border-black pb-3'>
+                                Generated Content
+                            </h2>
+
+                            <div className="prose prose-lg max-w-none text-black font-mono">
+                                {article ? (
+                                    <Markdown>{article}</Markdown>
+                                ) : (
+                                    <div className='h-full flex flex-col items-center justify-center text-center p-10 opacity-50'>
+                                        <div className="w-20 h-20 bg-black border-4 border-black rounded-none flex items-center justify-center mb-6">
+                                            <Sparkles className='w-10 h-10 text-white' />
+                                        </div>
+                                        <p className="text-black font-mono font-bold uppercase tracking-wider">Your generated article will appear here...</p>
+                                    </div>
+                                )}
+                            </div>
                         </div>
                     </div>
                 </div>

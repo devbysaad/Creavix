@@ -18,37 +18,31 @@ const navItems = [
 const Sidebar = ({ sidebar, setSidebar }) => {
     const { user } = useUser()
     const { signOut } = useClerk()
-    
-    // --- Theme Classes ---
-    const sidebarBg = 'bg-gray-900 border-gray-800'; 
-    const iconColor = 'text-gray-400';
-    // UPDATED: Active link style uses a Blue/Cyan gradient
-    const activeLinkClasses = 'bg-gradient-to-r from-blue-600 to-cyan-500 text-white font-semibold shadow-inner shadow-blue-900/50';
-    const inactiveLinkClasses = 'text-gray-400 hover:bg-gray-800 transition-colors duration-200';
 
     return (
-        <div className={`w-60 ${sidebarBg} border-r flex flex-col justify-between text-sm font-normal items-center max-sm:absolute top-16 bottom-0 z-20 ${sidebar ? 'translate-x-0' : 'max-sm:-translate-x-full'} transition-all duration-300 ease-in-out`}>
-            
-            <div className='w-full pt-6 flex flex-col'>
-                
-                <div className='flex flex-col items-center mb-6'>
-                    <img 
-                        src={user.imageUrl} 
-                        alt="User avatar" 
-                        className='w-16 h-16 rounded-full object-cover mx-auto border-2 border-indigo-500' 
-                    />
-                    <h1 className="text-lg font-semibold text-center text-white mt-2">{user.firstName || "User"}</h1>
-                    <p className='text-xs text-gray-500'>
+        <div className={`w-64 bg-white border-r-4 border-black flex flex-col justify-between text-sm font-mono font-bold items-center max-sm:absolute top-20 bottom-0 z-40 shadow-[4px_0_0_0_#000000] ${sidebar ? 'translate-x-0' : 'max-sm:-translate-x-full'} transition-transform duration-200`}>
+
+            <div className='w-full pt-6 flex flex-col px-3'>
+
+                <div className='flex flex-col items-center mb-8 px-4 pb-6 border-b-4 border-black'>
+                    <div className="relative">
+                        <img
+                            src={user.imageUrl}
+                            alt="User avatar"
+                            className='w-20 h-20 rounded-none object-cover mx-auto border-4 border-black'
+                        />
+                        <div className="absolute bottom-0 right-0 w-5 h-5 bg-blue-600 rounded-none border-2 border-black"></div>
+                    </div>
+                    <h1 className="text-base font-mono font-black text-center text-black mt-4 uppercase tracking-wider">{user.firstName || "User"}</h1>
+                    <p className='text-xs font-mono font-bold text-black mt-2 uppercase tracking-wide'>
                         {user?.publicMetadata?.plan?.trim().toLowerCase() === "premium"
-                            ? <span className='text-indigo-400 font-medium'>Premium Plan</span>
-                            : "Free Plan"
+                            ? <span className='inline-flex items-center px-3 py-1 rounded-none text-xs font-mono font-black bg-blue-600 text-white border-2 border-black uppercase tracking-widest'>Premium</span>
+                            : <span className="text-black border-2 border-black px-3 py-1 rounded-none bg-white">Free</span>
                         }
                     </p>
                 </div>
 
-                <hr className="my-3 border-gray-800 w-4/5 mx-auto" />
-
-                <div className='pt-0 w-full px-3'>
+                <div className='w-full space-y-2'>
                     {navItems.map(({ to, label, Icon }) => (
                         <NavLink
                             key={to}
@@ -56,13 +50,15 @@ const Sidebar = ({ sidebar, setSidebar }) => {
                             end={to === '/ai'}
                             onClick={() => setSidebar(false)}
                             className={({ isActive }) =>
-                                `px-3.5 py-2.5 flex items-center gap-3 rounded-lg my-1
-                                ${isActive ? activeLinkClasses : inactiveLinkClasses}`
+                                `px-4 py-3 flex items-center gap-3 rounded-none transition-all duration-200 group uppercase tracking-wider border-2 font-black
+                                ${isActive
+                                    ? 'bg-black text-white border-black shadow-[4px_4px_0_0_#000000] -translate-x-1 -translate-y-1'
+                                    : 'text-black border-black bg-white hover:bg-blue-600 hover:text-white hover:border-blue-600 hover:shadow-[4px_4px_0_0_#000000] hover:-translate-x-1 hover:-translate-y-1'}`
                             }
                         >
                             {({ isActive }) => (
                                 <>
-                                    <Icon className={`w-5 h-5 ${isActive ? 'text-white' : iconColor}`} />
+                                    <Icon className={`w-5 h-5 transition-colors ${isActive ? 'text-white' : 'text-black group-hover:text-white'}`} />
                                     {label}
                                 </>
                             )}
@@ -71,36 +67,36 @@ const Sidebar = ({ sidebar, setSidebar }) => {
                 </div>
 
             </div>
-            
-            <div className={`w-full p-3 border-t ${sidebarBg}`}> 
+
+            <div className="w-full p-4 border-t-4 border-black bg-white">
                 <div className="flex items-center justify-between w-full">
 
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-3 overflow-hidden">
                         <UserButton
                             afterSignOutUrl="/"
                             appearance={{
                                 elements: {
-                                    rootBox: "rounded-full border border-gray-700 hover:bg-gray-800 transition p-0.5",
-                                    avatarBox: "w-8 h-8", 
+                                    rootBox: "rounded-none border-2 border-black hover:border-blue-600 transition",
+                                    avatarBox: "w-8 h-8",
                                 },
                             }}
                         />
-                        <div className="flex flex-col leading-tight">
-                            <span className="font-semibold text-white text-sm">
+                        <div className="flex flex-col leading-tight min-w-0">
+                            <span className="font-mono font-black text-black text-xs truncate uppercase tracking-wide">
                                 {user.fullName}
                             </span>
-                            <p className="text-xs text-gray-500">
-                                View Profile
-                            </p>
+                            <span className="text-xs font-mono font-bold text-black/60 truncate uppercase tracking-wider">
+                                Profile
+                            </span>
                         </div>
                     </div>
 
                     <button
                         onClick={signOut}
-                        className={`p-2 rounded-lg ${inactiveLinkClasses}`} 
+                        className="p-2 rounded-none text-black hover:bg-black hover:text-white transition-colors border-2 border-black"
                         title="Sign Out"
                     >
-                        <LogOut className="w-5 h-5 text-gray-400" />
+                        <LogOut className="w-4 h-4" />
                     </button>
 
                 </div>

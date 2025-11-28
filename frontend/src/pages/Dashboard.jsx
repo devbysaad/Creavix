@@ -3,7 +3,7 @@ import { Outlet } from 'react-router-dom'
 import { dummyCreationData } from '../assets/assets'
 import { Sparkle, Sparkles } from 'lucide-react'
 import { Protect } from '@clerk/clerk-react'
-import CreationItem from '../components/CreationItem' 
+import CreationItem from '../components/CreationItem'
 
 const Dashboard = () => {
     const [creation, setCreation] = useState([])
@@ -16,57 +16,53 @@ const Dashboard = () => {
         getDashboardData()
     }, [])
 
-    // --- Theme Classes ---
-    // Card/Container style: bg-gray-700
-    const cardClasses = 'flex flex-col w-72 bg-gray-700 rounded-xl border border-gray-600 p-0 shadow-lg';
-    // Accent Icon Container: Primary Indigo gradient (UNCHANGED)
-    const iconContainerClasses = 'w-10 h-10 rounded-lg bg-gradient-to-br from-indigo-600 to-indigo-500 text-white flex justify-center items-center';
-    // Text Colors
-    const primaryText = 'text-white';
-    // ---
-
     return (
-        // Main Container: Black background, full height scrollable
-        <div className='h-full overflow-y-scroll p-6 bg-black'>
-            <div className="flex flex-row gap-6">
+        // Main Container
+        <div className='h-full overflow-y-scroll p-6 sm:p-8 bg-white'>
+            <div className="flex flex-col gap-8 mb-10 max-w-2xl">
 
                 {/* Total Creation Card */}
-                <div className={cardClasses}>
-                    <div className='flex flex-row items-center w-full px-6 py-4 justify-between'>
-                        <div className='text-gray-300'> 
-                            <p className='text-sm'>Total Creation</p>
-                            <h2 className={`text-xl font-semibold ${primaryText}`}>{creation.length}</h2>
+                <div className="flex flex-col bg-white rounded-none border-4 border-black p-8 shadow-[8px_8px_0_0_#000000] hover:shadow-[12px_12px_0_0_#000000] hover:-translate-x-1 hover:-translate-y-1 transition-all duration-200">
+                    <div className='flex flex-row items-center justify-between'>
+                        <div>
+                            <p className='text-sm font-mono font-black text-black mb-2 uppercase tracking-widest'>Total Creations</p>
+                            <h2 className="text-4xl font-mono font-black text-blue-600">{creation.length}</h2>
                         </div>
-                        <div className={iconContainerClasses}>
-                            <Sparkle className='w-5 text-white' />
+                        <div className="w-16 h-16 rounded-none bg-black border-4 border-black text-white flex justify-center items-center">
+                            <Sparkle className='w-8 h-8' />
                         </div>
                     </div>
                 </div>
 
                 {/* Active Plan Card */}
-                <div className={cardClasses}>
-                    <div className='flex flex-row items-center w-full px-6 py-4 justify-between'>
-                        <div className='text-gray-300'>
-                            <p className='text-sm'>Active Plan</p>
-                            <h2 className={`text-xl font-semibold ${primaryText}`}>
-                                <Protect plan='premium' fallback={<span className='text-gray-300'>Free</span>}>
-                                    <span className='text-indigo-400'>Premium</span>
+                <div className="flex flex-col bg-white rounded-none border-4 border-black p-8 shadow-[8px_8px_0_0_#000000] hover:shadow-[12px_12px_0_0_#000000] hover:-translate-x-1 hover:-translate-y-1 transition-all duration-200">
+                    <div className='flex flex-row items-center justify-between'>
+                        <div>
+                            <p className='text-sm font-mono font-black text-black mb-2 uppercase tracking-widest'>Active Plan</p>
+                            <h2 className="text-4xl font-mono font-black">
+                                <Protect plan='premium' fallback={<span className='text-black'>Free</span>}>
+                                    <span className='text-blue-600'>Premium</span>
                                 </Protect>
                             </h2>
                         </div>
-                        <div className={iconContainerClasses}>
-                            <Sparkles className='w-5 text-white' />
+                        <div className="w-16 h-16 rounded-none bg-blue-600 border-4 border-blue-600 text-white flex justify-center items-center">
+                            <Sparkles className='w-8 h-8' />
                         </div>
                     </div>
                 </div>
 
             </div>
 
-            <div className='flex mt-10 flex-col'>
-                <h1 className='text-3xl font-semibold text-white'>Recent Creations</h1>
-                <div className='flex flex-wrap gap-6 mt-4'>
+            <div className='flex flex-col'>
+                <h1 className='text-3xl font-mono font-black text-black mb-8 uppercase tracking-wider border-b-4 border-black pb-4'>Recent Creations</h1>
+                <div className='grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8'>
                     {creation.map((item) => <CreationItem key={item.id} item={item} />)}
                 </div>
+                {creation.length === 0 && (
+                    <div className="text-center py-20 border-4 border-dashed border-black rounded-none bg-white">
+                        <p className="font-mono font-black text-black uppercase tracking-wider">No creations yet. Start creating!</p>
+                    </div>
+                )}
             </div>
 
             <Outlet />

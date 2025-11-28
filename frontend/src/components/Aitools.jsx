@@ -8,43 +8,54 @@ const Aitools = () => {
   const { user } = useUser()
 
   return (
-    <div className="bg-black py-20">
-      {/* Header */}
-      <div className='flex justify-center items-center flex-col text-center mt-10 px-4 sm:px-6 lg:px-0 text-gray-200'>
-        <h1 className='text-3xl sm:text-4xl md:text-5xl font-semibold text-white'>
-          Powerful AI Tools
-        </h1>
-        <p className='font-light text-sm sm:text-base mt-2 sm:mt-4 text-gray-400'>
-          Access a complete suite of intelligent tools designed to create, refine, and <br />
-          elevate your content using advanced AI technology.
-        </p>
-      </div>
+    <div className="bg-white py-24 relative overflow-hidden border-t-4 border-black">
+      {/* Background decoration - removed gradient, replaced with solid line */}
+      <div className="absolute top-0 left-0 w-full h-1 bg-black"></div>
 
-      {/* Cards */}
-      <div className='flex justify-center mt-10 px-4 sm:px-6 lg:px-0'>
-        <div className='flex flex-wrap justify-center gap-6'>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        {/* Header */}
+        <div className='text-center max-w-3xl mx-auto mb-16'>
+          <h2 className='text-base font-mono font-bold text-blue-600 tracking-widest uppercase mb-4 border-4 border-blue-600 inline-block px-6 py-2'>
+            Capabilities
+          </h2>
+          <h1 className='text-3xl sm:text-4xl md:text-5xl font-mono font-black text-black mb-8 tracking-tight uppercase'>
+            Powerful AI Tools
+          </h1>
+          <p className='text-lg font-mono text-black leading-relaxed uppercase tracking-wide'>
+            Access a complete suite of intelligent tools designed to create, refine, and elevate your content using advanced AI technology.
+          </p>
+        </div>
+
+        {/* Cards */}
+        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8'>
           {AiToolsData.map((tool, index) => (
             <div
               key={index}
-              className='p-6 sm:p-8 m-2 sm:m-4 w-full sm:w-64 md:w-72 lg:w-80 rounded-xl bg-gray-900 border border-gray-800 shadow-md hover:-translate-y-1 hover:shadow-lg transition-all duration-300 cursor-pointer'
+              className='group relative p-8 rounded-none bg-white border-4 border-black hover:border-blue-600 shadow-[8px_8px_0_0_#000000] hover:shadow-[12px_12px_0_0_#000000] hover:-translate-x-1 hover:-translate-y-1 transition-all duration-200 cursor-pointer overflow-hidden'
               onClick={() => user && navigate(tool.path)}
             >
-              <tool.Icon
-                className='w-12 h-12 p-3 text-white rounded-xl shadow-sm'
-                style={{ background: `linear-gradient(to bottom, ${tool.bg.from}, ${tool.bg.to})` }}
-              />
-              <h3 className='mt-4 sm:mt-6 mb-2 text-lg font-semibold text-white'>
-                {tool.title}
-              </h3>
-              <p className='text-gray-400 text-sm sm:text-base'>
-                {tool.description}
-              </p>
+              <div className="relative z-10">
+                <div
+                  className='w-16 h-16 p-4 rounded-none shadow-[4px_4px_0_0_#000000] mb-6 transform group-hover:scale-110 group-hover:shadow-[6px_6px_0_0_#000000] group-hover:-translate-x-1 group-hover:-translate-y-1 transition-all duration-200 border-4 border-black bg-black'
+                >
+                  <tool.Icon className='w-full h-full text-white' />
+                </div>
+
+                <h3 className='text-xl font-mono font-black text-black mb-4 group-hover:text-blue-600 transition-colors uppercase tracking-wider'>
+                  {tool.title}
+                </h3>
+
+                <p className='text-black font-mono text-sm leading-relaxed uppercase tracking-wide'>
+                  {tool.description}
+                </p>
+              </div>
             </div>
           ))}
         </div>
       </div>
     </div>
   )
+
 }
 
 export default Aitools

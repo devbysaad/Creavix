@@ -3,52 +3,45 @@ import Markdown from 'react-markdown'
 
 const CreationItem = ({ item, onClick }) => {
     const [expand, setexpand] = useState(false)
-    
-    // --- Dark Theme Classes ---
-    const cardBaseClasses = "flex flex-col p-6 sm:p-8 mb-4 sm:mb-6 w-[90%] rounded-xl bg-gray-800 border border-gray-700 shadow-xl shadow-black/30 hover:-translate-y-1 hover:shadow-2xl transition-all duration-300 cursor-pointer";
-    const promptTextClasses = "text-xl sm:text-2xl font-semibold text-white leading-snug truncate w-4/5";
-    const metadataTextClasses = "mt-2 text-gray-400 text-sm sm:text-base";
-    // UPDATED: Type Button uses a Green/Teal gradient
-    const buttonClasses = "bg-gradient-to-r from-green-600 to-teal-500 text-white px-5 py-2 rounded-full text-sm sm:text-base font-medium hover:from-green-500 hover:to-teal-400 transition-colors shadow-lg shadow-black/20";
-    const expandedContentClasses = 'mt-3 h-full overflow-y-scroll text-sm text-gray-300';
-    // ---
 
     return (
-        <div 
-            className={cardBaseClasses}
-            onClick={onClick} 
+        <div
+            className="flex flex-col p-8 mb-8 w-full rounded-none bg-white border-4 border-black shadow-[8px_8px_0_0_#000000] hover:shadow-[12px_12px_0_0_#000000] hover:-translate-x-1 hover:-translate-y-1 transition-all duration-200 cursor-pointer group"
+            onClick={onClick}
         >
             {/* Prompt */}
-            <h2 onClickCapture={(e) => {
-                e.stopPropagation(); 
-                setexpand(!expand);
-            }}
-                className={promptTextClasses}
-                title={item.prompt}
-            >
-                {item.prompt}
-            </h2>
+            <div className="flex justify-between items-start gap-6">
+                <h2 onClickCapture={(e) => {
+                    e.stopPropagation();
+                    setexpand(!expand);
+                }}
+                    className="text-lg sm:text-xl font-mono font-bold text-black leading-tight uppercase tracking-wider flex-1 group-hover:text-blue-600 transition-colors"
+                    title={item.prompt}
+                >
+                    {item.prompt}
+                </h2>
 
-            <p className={metadataTextClasses}>
-                {item.type} • {new Date(item.created_at).toLocaleDateString()}
+                <span className={`px-4 py-2 rounded-none text-xs font-mono font-bold uppercase tracking-widest border-2 ${item.type === 'image'
+                    ? 'bg-black text-white border-black'
+                    : 'bg-blue-600 text-white border-blue-600'
+                    }`}>
+                    {item.type}
+                </span>
+            </div>
+
+            <p className="mt-4 text-black font-mono text-sm uppercase tracking-wide">
+                {new Date(item.created_at).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' })}
             </p>
 
-            {/* Type Button (Green/Teal Gradient) */}
-            <div className="mt-4 flex justify-start">
-                <button className={buttonClasses}>
-                    {item.type}
-                </button>
-            </div>
-            
             {/* Expanded Content Area */}
-            { expand && (
-                <div>
+            {expand && (
+                <div className="mt-8 pt-8 border-t-4 border-black">
                     {item.type === 'image' ? (
-                        <div>
-                            <img src={item.content} alt="Generated image" className='mt-5 w-full max-w-lg rounded-xl shadow-lg border border-gray-700' />
+                        <div className="flex justify-center bg-white p-4 border-4 border-black">
+                            <img src={item.content} alt="Generated image" className='w-full max-w-2xl rounded-none border-2 border-black' />
                         </div>
                     ) : (
-                        <div className={expandedContentClasses}>
+                        <div className="prose prose-lg max-w-none text-black font-mono">
                             <div className='rest-tw'>
                                 <Markdown>
                                     {String(item.content || "").trim()}

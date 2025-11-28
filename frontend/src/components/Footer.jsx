@@ -3,51 +3,56 @@ import { NavLink } from 'react-router-dom';
 
 const Footer = () => {
     return (
-        <footer className="bg-gray-900 border-t border-gray-800 mt-20">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 text-gray-300">
-                <div className="flex flex-col md:flex-row justify-between gap-10 md:gap-0">
+        <footer className="bg-white border-t-4 border-black mt-auto">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-8">
 
                     {/* Logo and description */}
-                    <div className="flex flex-col max-w-sm">
-                        <img src='/creavixtext.png' alt="Creavix AI Logo" className="w-36 mb-4" />
-                        <p className="text-gray-400 text-sm">
+                    <div className="col-span-1 lg:col-span-2 border-4 border-black p-6 bg-white shadow-[6px_6px_0_0_#000000]">
+                        <img src='/creavixtext.png' alt="Creavix AI Logo" className="h-10 w-auto mb-6 border-2 border-black p-2" />
+                        <p className="text-black font-mono text-sm leading-relaxed max-w-md uppercase tracking-wide">
                             Experience the potential of AI with Creavix AI. Elevate your content creation using our advanced AI tools. Craft articles, produce stunning images, and streamline your workflow effortlessly.
                         </p>
                     </div>
 
                     {/* Company links */}
-                    <div className="flex flex-col">
-                        <h3 className="text-white font-semibold mb-4">Company</h3>
-                        <ul className="space-y-2 text-gray-400 text-sm">
-                            <li><NavLink to="/" className="hover:text-white">Home</NavLink></li>
-                            <li><NavLink to="/about" className="hover:text-white">About Us</NavLink></li>
-                            <li><NavLink to="/contact" className="hover:text-white">Contact Us</NavLink></li>
-                            <li><NavLink to="/privacy" className="hover:text-white">Privacy Policy</NavLink></li>
+                    <div className="border-4 border-black p-6 bg-white shadow-[6px_6px_0_0_#000000]">
+                        <h3 className="text-sm font-mono font-black text-black tracking-widest uppercase mb-6 border-b-2 border-black pb-2">Company</h3>
+                        <ul className="space-y-3">
+                            <li><NavLink to="/" className="text-black hover:text-blue-600 transition-colors text-sm font-mono uppercase tracking-wider font-bold">Home</NavLink></li>
+                            <li><NavLink to="/about" className="text-black hover:text-blue-600 transition-colors text-sm font-mono uppercase tracking-wider font-bold">About Us</NavLink></li>
+                            <li><NavLink to="/contact" className="text-black hover:text-blue-600 transition-colors text-sm font-mono uppercase tracking-wider font-bold">Contact Us</NavLink></li>
+                            <li><NavLink to="/privacy" className="text-black hover:text-blue-600 transition-colors text-sm font-mono uppercase tracking-wider font-bold">Privacy Policy</NavLink></li>
                         </ul>
                     </div>
 
                     {/* Newsletter */}
-                    <div className="flex flex-col max-w-sm">
-                        <h3 className="text-white font-semibold mb-4">Subscribe to our newsletter</h3>
-                        <p className="text-gray-400 text-sm mb-3">
+                    <div className="border-4 border-black p-6 bg-white shadow-[6px_6px_0_0_#000000]">
+                        <h3 className="text-sm font-mono font-black text-black tracking-widest uppercase mb-4 border-b-2 border-black pb-2">Subscribe</h3>
+                        <p className="text-black font-mono text-xs mb-6 uppercase tracking-wide">
                             The latest news, articles, and resources, sent to your inbox weekly.
                         </p>
-                        <div className="flex gap-2">
+                        <form className="flex flex-col gap-3">
                             <input
                                 type="email"
-                                placeholder="Enter your email"
-                                className="flex-1 border border-gray-700 rounded-lg px-3 py-2 bg-gray-800 text-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-600"
+                                placeholder="ENTER YOUR EMAIL"
+                                className="w-full appearance-none rounded-none border-4 border-black bg-white px-4 py-3 text-sm font-mono text-black placeholder-black/50 focus:border-blue-600 focus:outline-none uppercase tracking-wide"
                             />
-                            <button className="bg-indigo-600 cursor-pointer active:scale-95 transition-all hover:scale-102 text-white px-4 py-2 rounded-lg hover:bg-indigo-500">
+                            <button
+                                type="button"
+                                className="w-full rounded-none border-4 border-black bg-black px-6 py-3 text-sm font-mono font-bold text-white shadow-[4px_4px_0_0_#000000] hover:shadow-[6px_6px_0_0_#000000] hover:-translate-x-1 hover:-translate-y-1 hover:bg-blue-600 hover:border-blue-600 transition-all duration-200 uppercase tracking-widest"
+                            >
                                 Subscribe
                             </button>
-                        </div>
+                        </form>
                     </div>
                 </div>
 
                 {/* Copyright */}
-                <div className="mt-10 text-center text-gray-500 text-sm border-t border-gray-800 pt-4">
-                    Copyright 2025 © Creavix AI. All Rights Reserved.
+                <div className="mt-12 border-t-4 border-black pt-8">
+                    <p className="text-base font-mono font-bold text-black text-center uppercase tracking-widest">
+                        &copy; 2025 Creavix AI. All rights reserved.
+                    </p>
                 </div>
             </div>
         </footer>

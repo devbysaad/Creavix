@@ -3,68 +3,82 @@ import { Eraser } from 'lucide-react'
 
 const RemoveBG = () => {
   const [file, setFile] = useState(null)
-
-  // Classes
-  const mainContainerClasses =
-    'flex flex-col lg:flex-row gap-6 p-6 bg-black h-[100%] m-5  overflow-y-scroll'
-  const panelClasses =
-    'w-full p-6 bg-gray-900 rounded-xl border border-gray-800 shadow-lg flex flex-col'
-  const inputClasses =
-    'w-full p-3 px-4 mt-2 outline-none text-sm rounded-lg border border-gray-700 text-gray-400 bg-gray-800'
-  const buttonGradientClasses =
-    'bg-gradient-to-r from-green-600 to-teal-500 hover:from-green-500 hover:to-teal-400 shadow-teal-500/30'
-  const primaryAccent = 'text-green-400'
+  const [result, setResult] = useState(null)
+  const [isLoading, setIsLoading] = useState(false)
 
   const onSubmitHandler = (e) => {
     e.preventDefault()
-    // Placeholder for submit logic
+    setIsLoading(true)
+    setTimeout(() => {
+      setResult('https://via.placeholder.com/800x600/FFFFFF/000000?text=Background+Removed')
+      setIsLoading(false)
+    }, 2000)
   }
 
   return (
-    <div className={mainContainerClasses}>
-      {/* Left Column (Input) */}
-      <form
-        onSubmit={onSubmitHandler}
-        className={`lg:w-1/2 xl:w-1/3 ${panelClasses} h-[80%]`}
-      >
-        <div className="flex items-center gap-3 mb-6">
-          <Eraser className={`w-6 h-6 ${primaryAccent}`} />
-          <h1 className="text-2xl font-semibold text-white">
+    <div className="h-full overflow-y-auto p-6 sm:p-8 bg-white">
+      <div className="max-w-7xl mx-auto h-full flex flex-col">
+        <div className="flex items-center gap-4 mb-8 pb-6 border-b-4 border-black">
+          <div className="p-3 bg-blue-600 border-4 border-black">
+            <Eraser className="w-8 h-8 text-white" />
+          </div>
+          <h1 className='text-2xl sm:text-3xl font-mono font-black text-black tracking-tight uppercase'>
             Remove Background
           </h1>
         </div>
-        <label className="mt-4 text-sm font-medium text-gray-300">
-          Upload image
-        </label>
-        <input
-          type="file"
-          onChange={(e) => setFile(e.target.files[0])}
-          accept="image/*"
-          className={inputClasses}
-        />
-        <p className="mt-1 text-xs text-gray-500">
-          Supports JPG, PNG, and other image formats
-        </p>
-        <button
-          type="submit"
-          className={`mt-8 w-full flex justify-center items-center gap-2 ${buttonGradientClasses} text-white px-4 py-3 rounded-lg text-base font-semibold transition-all active:scale-[0.98] shadow-lg`}
-        >
-          <Eraser className="w-5 h-5" />
-          Remove background
-        </button>
-      </form>
-      {/* Right Column (Output) */}
-      <div className={`flex-1 ${panelClasses} h-[80%]`}>
-        <div className="flex items-center gap-3 mb-4">
-          <Eraser className={`w-5 h-5 ${primaryAccent}`} />
-          <h1 className="text-lg font-semibold text-white">
-            Processed Image
-          </h1>
-        </div>
-        <div className="flex-1 flex justify-center items-center">
-          <div className="text-sm flex flex-col items-center gap-5 text-gray-500">
-            <Eraser className="w-10 h-10 text-gray-700" />
-            <p>Upload an image and click &quot;Remove Background&quot; to get started</p>
+
+        <div className='flex flex-col lg:flex-row gap-8 flex-1 min-h-0'>
+          {/* Input Panel */}
+          <form onSubmit={onSubmitHandler} className='w-full lg:w-1/3 flex flex-col gap-6'>
+            <div className="bg-white border-4 border-black rounded-none p-8 shadow-[8px_8px_0_0_#000000]">
+              <h2 className='text-lg font-mono font-black text-black mb-8 uppercase tracking-wider border-b-2 border-black pb-3'>
+                Upload Image
+              </h2>
+
+              <label className="block text-sm font-mono font-bold text-black mb-3 uppercase tracking-wide">
+                Upload image
+              </label>
+              <input
+                type="file"
+                onChange={(e) => setFile(e.target.files[0])}
+                accept="image/*"
+                className="w-full p-4 rounded-none bg-white border-4 border-black text-black focus:border-blue-600 transition-all font-mono focus:outline-none"
+              />
+              <p className="mt-3 text-xs font-mono uppercase text-black/60 tracking-wide">
+                Supports JPG, PNG, and other image formats
+              </p>
+
+              <button
+                type="submit"
+                className={`mt-8 w-full py-4 rounded-none font-mono font-black uppercase tracking-widest text-white shadow-[4px_4px_0_0_#000000] transition-all duration-200 flex items-center justify-center gap-2 border-4 ${isLoading ? 'bg-black border-black cursor-not-allowed opacity-70' : 'bg-black border-black hover:bg-blue-600 hover:border-blue-600 hover:shadow-[6px_6px_0_0_#000000] hover:-translate-x-1 hover:-translate-y-1'}`}
+                disabled={isLoading}
+              >
+                <Eraser className="w-5 h-5" />
+                {isLoading ? 'Removing...' : 'Remove background'}
+              </button>
+            </div>
+          </form>
+
+          {/* Output Panel */}
+          <div className='w-full lg:w-2/3 flex-1 min-h-[500px] lg:min-h-0'>
+            <div className="h-full bg-white border-4 border-black rounded-none p-8 shadow-[8px_8px_0_0_#000000] overflow-y-auto">
+              <h2 className='text-lg font-mono font-black text-black mb-8 uppercase tracking-wider border-b-2 border-black pb-3'>
+                Processed Image
+              </h2>
+
+              <div className="flex-1 flex justify-center items-center min-h-[400px]">
+                {result ? (
+                  <img src={result} alt="Result" className="max-w-full border-4 border-black" />
+                ) : (
+                  <div className="text-center flex flex-col items-center gap-6">
+                    <div className="w-20 h-20 bg-black border-4 border-black rounded-none flex items-center justify-center">
+                      <Eraser className="w-10 h-10 text-white" />
+                    </div>
+                    <p className="font-mono font-bold uppercase tracking-wider text-black">Upload an image and click "Remove Background" to get started</p>
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
         </div>
       </div>

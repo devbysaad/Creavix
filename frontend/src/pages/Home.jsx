@@ -8,16 +8,14 @@ import Hero from '../components/Hero'
 
 const Home = () => {
   return (
-    <div className="bg-black text-gray-200 min-h-screen">
+    <div className="bg-white text-black min-h-screen">
       <Navbar />
-      <Hero />
-      <hr className="border-gray-800 my-16" />
-      <Aitools />
-      <hr className="border-gray-800 my-16" />
-      <UserTestmionial />
-      <hr className="border-gray-800 my-16" />
-      <Plan />
-      <hr className="border-gray-800 my-16" />
+      <main className="space-y-0">
+        <Hero />
+        <Aitools />
+        <UserTestmionial />
+        <Plan />
+      </main>
       <Footer />
     </div>
   )
