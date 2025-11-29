@@ -71,7 +71,7 @@ const PrivacyPolicy = () => {
     return (
         <div className="max-w-6xl mx-auto px-8 py-20 bg-white min-h-screen">
             <div className="border-4 border-black p-10 shadow-[12px_12px_0_0_#000000] bg-white">
-                <h1 className="text-5xl font-mono font-black mb-6 uppercase tracking-wider">Privacy Policy</h1>
+                <h1 className="text-5xl font-mono text-black mb-6 uppercase tracking-wider">Privacy Policy</h1>
                 <p className="text-sm font-mono font-bold uppercase tracking-wide text-black/60 mb-12 pb-6 border-b-4 border-black">
                     Last Updated: November 29, 2025
                 </p>

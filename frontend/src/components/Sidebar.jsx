@@ -1,8 +1,7 @@
 import { Protect, UserButton, useClerk, useUser } from '@clerk/clerk-react'
 import React from 'react'
-import { Eraser, FileText, Hash, House, Image, Scissors, SquarePen, Users } from 'lucide-react';
-import { NavLink } from 'react-router-dom';
-import { LogOut, } from "lucide-react";
+import { Eraser, FileText, Hash, House, Image, Scissors, SquarePen, Users, LogOut } from 'lucide-react'
+import { NavLink } from 'react-router-dom'
 
 const navItems = [
     { to: '/ai', label: 'Dashboard', Icon: House },
@@ -20,28 +19,41 @@ const Sidebar = ({ sidebar, setSidebar }) => {
     const { signOut } = useClerk()
 
     return (
-        <div className={`w-64 bg-white border-r-4 border-black flex flex-col justify-between text-sm font-mono font-bold items-center max-sm:absolute top-20 bottom-0 z-40 shadow-[4px_0_0_0_#000000] ${sidebar ? 'translate-x-0' : 'max-sm:-translate-x-full'} transition-transform duration-200`}>
+        <div className={`fixed sm:relative inset-0 sm:inset-auto w-64 bg-white border-r-4 border-black flex flex-col text-sm font-mono font-bold shadow-[4px_0_0_0_#000000] ${sidebar ? 'translate-x-0 z-50' : 'max-sm:-translate-x-full z-40'} sm:z-40 transition-transform duration-200 h-screen sm:h-auto`}>
 
-            <div className='w-full pt-6 flex flex-col px-3'>
-
-                <div className='flex flex-col items-center mb-8 px-4 pb-6 border-b-4 border-black'>
-                    <div className="relative">
+            {/* User Profile Section */}
+            <div className='w-full pt-8 pb-6 px-4 border-b-4 border-black bg-white'>
+                <div className='flex flex-col items-center'>
+                    <div className="relative mb-4">
                         <img
                             src={user.imageUrl}
                             alt="User avatar"
-                            className='w-20 h-20 rounded-none object-cover mx-auto border-4 border-black'
+                            className='w-24 h-24 rounded-none object-cover border-4 border-black'
                         />
-                        <div className="absolute bottom-0 right-0 w-5 h-5 bg-blue-600 rounded-none border-2 border-black"></div>
+                        <div className="absolute bottom-0 right-0 w-6 h-6 bg-blue-600 rounded-none border-2 border-black"></div>
                     </div>
-                    <h1 className="text-base font-mono font-black text-center text-black mt-4 uppercase tracking-wider">{user.firstName || "User"}</h1>
-                    <p className='text-xs font-mono font-bold text-black mt-2 uppercase tracking-wide'>
-                        {user?.publicMetadata?.plan?.trim().toLowerCase() === "premium"
-                            ? <span className='inline-flex items-center px-3 py-1 rounded-none text-xs font-mono font-black bg-blue-600 text-white border-2 border-black uppercase tracking-widest'>Premium</span>
-                            : <span className="text-black border-2 border-black px-3 py-1 rounded-none bg-white">Free</span>
-                        }
-                    </p>
+                    <h1 className="text-lg font-mono font-black text-center text-black mb-3 uppercase tracking-wider">
+                        {user.firstName || "User"}
+                    </h1>
+                    <div className='flex items-center justify-center'>
+                        <Protect
+                            plan='premium'
+                            fallback={
+                                <span className='inline-flex items-center px-4 py-2 rounded-none text-xs font-mono font-black bg-white text-black border-2 border-black uppercase tracking-widest'>
+                                    Free
+                                </span>
+                            }
+                        >
+                            <span className='inline-flex items-center px-4 py-2 rounded-none text-xs font-mono font-black bg-blue-600 text-white border-2 border-black uppercase tracking-widest shadow-[2px_2px_0_0_#000000]'>
+                                Premium
+                            </span>
+                        </Protect>
+                    </div>
                 </div>
+            </div>
 
+            {/* Navigation Section */}
+            <div className='flex-1 overflow-y-auto scrollbar-hide px-3 py-6'>
                 <div className='w-full space-y-2'>
                     {navItems.map(({ to, label, Icon }) => (
                         <NavLink
@@ -59,25 +71,24 @@ const Sidebar = ({ sidebar, setSidebar }) => {
                             {({ isActive }) => (
                                 <>
                                     <Icon className={`w-5 h-5 transition-colors ${isActive ? 'text-white' : 'text-black group-hover:text-white'}`} />
-                                    {label}
+                                    <span className="text-xs">{label}</span>
                                 </>
                             )}
                         </NavLink>
                     ))}
                 </div>
-
             </div>
 
+            {/* Footer Section - Profile & Logout */}
             <div className="w-full p-4 border-t-4 border-black bg-white">
-                <div className="flex items-center justify-between w-full">
-
-                    <div className="flex items-center gap-3 overflow-hidden">
+                <div className="flex items-center justify-between w-full gap-3">
+                    <div className="flex items-center gap-3 overflow-hidden flex-1 min-w-0">
                         <UserButton
                             afterSignOutUrl="/"
                             appearance={{
                                 elements: {
                                     rootBox: "rounded-none border-2 border-black hover:border-blue-600 transition",
-                                    avatarBox: "w-8 h-8",
+                                    avatarBox: "w-10 h-10 rounded-none",
                                 },
                             }}
                         />
@@ -86,23 +97,30 @@ const Sidebar = ({ sidebar, setSidebar }) => {
                                 {user.fullName}
                             </span>
                             <span className="text-xs font-mono font-bold text-black/60 truncate uppercase tracking-wider">
-                                Profile
+                                Settings
                             </span>
                         </div>
                     </div>
 
                     <button
                         onClick={signOut}
-                        className="p-2 rounded-none text-black hover:bg-black hover:text-white transition-colors border-2 border-black"
+                        className="p-2.5 rounded-none text-black hover:bg-black hover:text-white transition-all duration-200 border-2 border-black hover:shadow-[2px_2px_0_0_#000000] hover:-translate-x-0.5 hover:-translate-y-0.5 flex-shrink-0"
                         title="Sign Out"
                     >
                         <LogOut className="w-4 h-4" />
                     </button>
-
                 </div>
             </div>
+
+            {/* Mobile Overlay */}
+            {sidebar && (
+                <div
+                    className="fixed inset-0 bg-black/50 -z-10 sm:hidden"
+                    onClick={() => setSidebar(false)}
+                />
+            )}
         </div>
     )
 }
 
-export default Sidebar;
+export default Sidebar

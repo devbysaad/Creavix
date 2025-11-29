@@ -7,6 +7,7 @@ import CreationItem from '../components/CreationItem'
 
 const Dashboard = () => {
     const [creation, setCreation] = useState([])
+    const [expandedItemId, setExpandedItemId] = useState(null)
 
     const getDashboardData = async () => {
         setCreation(dummyCreationData)
@@ -16,10 +17,14 @@ const Dashboard = () => {
         getDashboardData()
     }, [])
 
+    const handleToggleExpand = (itemId) => {
+        setExpandedItemId(expandedItemId === itemId ? null : itemId)
+    }
+
     return (
         // Main Container
-        <div className='h-full overflow-y-scroll p-6 sm:p-8 bg-white'>
-            <div className="flex flex-col gap-8 mb-10 max-w-2xl">
+        <div className='h-full flex flex-col overflow-auto scrollbar-hide p-6 sm:p-8 bg-white'>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
 
                 {/* Total Creation Card */}
                 <div className="flex flex-col bg-white rounded-none border-4 border-black p-8 shadow-[8px_8px_0_0_#000000] hover:shadow-[12px_12px_0_0_#000000] hover:-translate-x-1 hover:-translate-y-1 transition-all duration-200">
@@ -53,10 +58,17 @@ const Dashboard = () => {
 
             </div>
 
-            <div className='flex flex-col'>
+            <div className='flex flex-col flex-1'>
                 <h1 className='text-3xl font-mono font-black text-black mb-8 uppercase tracking-wider border-b-4 border-black pb-4'>Recent Creations</h1>
-                <div className='grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8'>
-                    {creation.map((item) => <CreationItem key={item.id} item={item} />)}
+                <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8'>
+                    {creation.map((item) => (
+                        <CreationItem
+                            key={item.id}
+                            item={item}
+                            isExpanded={expandedItemId === item.id}
+                            onToggleExpand={() => handleToggleExpand(item.id)}
+                        />
+                    ))}
                 </div>
                 {creation.length === 0 && (
                     <div className="text-center py-20 border-4 border-dashed border-black rounded-none bg-white">

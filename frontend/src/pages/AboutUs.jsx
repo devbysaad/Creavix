@@ -5,7 +5,7 @@ const AboutUs = () => {
     return (
         <div className="max-w-6xl mx-auto px-8 py-20 bg-white min-h-screen">
             <div className="border-4 border-black p-10 shadow-[12px_12px_0_0_#000000] bg-white">
-                <h1 className="text-5xl font-mono font-black mb-12 uppercase tracking-wider border-b-4 border-black pb-6">About Creavix AI</h1>
+                <h1 className="text-5xl font-mono text-black mb-12 uppercase tracking-wider border-b-4 border-black pb-6">About Creavix AI</h1>
 
                 {/* Mission Section */}
                 <div className="mb-12 border-4 border-black p-8 bg-white shadow-[6px_6px_0_0_#000000]">

@@ -54,7 +54,7 @@ const ContactUs = () => {
     return (
         <div className="max-w-6xl mx-auto px-8 py-20 bg-white min-h-screen">
             <div className="border-4 border-black p-10 shadow-[12px_12px_0_0_#000000] bg-white">
-                <h1 className="text-5xl font-mono font-black mb-12 uppercase tracking-wider border-b-4 border-black pb-6">Contact Us</h1>
+                <h1 className="text-5xl font-mono text-black mb-12 uppercase tracking-wider border-b-4 border-black pb-6">Contact Us</h1>
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                     {/* Contact Form */}
