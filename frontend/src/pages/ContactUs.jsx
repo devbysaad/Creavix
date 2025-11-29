@@ -59,7 +59,7 @@ const ContactUs = () => {
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                     {/* Contact Form */}
                     <div className="border-4 border-black p-8 bg-white shadow-[6px_6px_0_0_#000000]">
-                        <h2 className="text-2xl font-mono font-black mb-6 uppercase tracking-wider border-b-2 border-black pb-4">Send Us a Message</h2>
+                        <h2 className="text-2xl font-mono text-black mb-6 uppercase tracking-wider border-b-2 border-black pb-4">Send Us a Message</h2>
                         <form onSubmit={handleSubmit} className="space-y-6">
                             <div>
                                 <label htmlFor="name" className="block text-sm font-mono font-bold text-black mb-3 uppercase tracking-wide">
