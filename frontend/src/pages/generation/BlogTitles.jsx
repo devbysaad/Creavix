@@ -1,22 +1,49 @@
+// src/pages/generation/BlogTitles.jsx
 import React, { useState } from 'react';
-import { Hash, Sparkles } from 'lucide-react';
+import { Hash } from 'lucide-react';
+import { useAuth } from '@clerk/clerk-react';
+import { toast } from 'react-hot-toast';
+import api from '../../services/api';
 
 const BlogTitles = () => {
     const [topic, setTopic] = useState('');
     const [titles, setTitles] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
+    const { getToken } = useAuth();
 
-    const handleGenerate = () => {
-        setIsLoading(true);
-        setTimeout(() => {
-            setTitles([
-                `10 Ways to Master the Art of ${topic}`,
-                `The Ultimate Guide to ${topic} in 2024`,
-                `Why ${topic} is the Biggest Trend You Can't Ignore`,
-                `A Beginner's Journey: Getting Started with ${topic}`
-            ]);
+    const handleGenerate = async () => {
+        if (!topic.trim()) {
+            toast.error('Please enter a topic');
+            return;
+        }
+
+        try {
+            setIsLoading(true);
+            const prompt = `Generate 5 creative and engaging blog titles about: ${topic}. Return only the titles, one per line.`;
+            
+            const token = await getToken();
+            const { data } = await api.post('/api/ai/generate-blog-title', 
+                { prompt }, 
+                { headers: { Authorization: `Bearer ${token}` } }
+            );
+            
+            if (data.success) {
+                const titlesArray = data.content
+                    .split('\n')
+                    .map(title => title.trim())
+                    .filter(title => title.length > 0)
+                    .map(title => title.replace(/^\d+\.\s*/, ''));
+                
+                setTitles(titlesArray);
+                toast.success('Titles generated successfully!');
+            } else {
+                toast.error(data.message);
+            }
+        } catch (error) {
+            toast.error(error.response?.data?.message || error.message);
+        } finally {
             setIsLoading(false);
-        }, 1500);
+        }
     };
 
     return (
@@ -32,8 +59,6 @@ const BlogTitles = () => {
                 </div>
 
                 <div className='flex flex-col lg:flex-row gap-8 flex-1 min-h-0'>
-
-                    {/* Input Panel */}
                     <div className='w-full lg:w-1/3 flex flex-col gap-6'>
                         <div className="bg-white border-4 border-black rounded-none p-8 shadow-[8px_8px_0_0_#000000]">
                             <h2 className='text-lg font-mono font-black text-black mb-8 uppercase tracking-wider border-b-2 border-black pb-3'>Input Topic</h2>
@@ -64,7 +89,6 @@ const BlogTitles = () => {
                         </div>
                     </div>
 
-                    {/* Output Panel */}
                     <div className='w-full lg:w-2/3 flex-1 min-h-[500px] lg:min-h-0'>
                         <div className="h-full bg-white border-4 border-black rounded-none p-8 shadow-[8px_8px_0_0_#000000] overflow-y-auto">
                             <h2 className='text-lg font-mono font-black text-black mb-8 uppercase tracking-wider border-b-2 border-black pb-3'>Generated Titles</h2>

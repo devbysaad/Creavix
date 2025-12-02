@@ -1,194 +1,342 @@
+// controllers/ai.controller.js
 import OpenAI from "openai";
 import sql from '../Database/db.js';
 import { clerkClient } from "@clerk/express";
 import axios from "axios";
 import { v2 as cloudinary } from 'cloudinary';
-import FormData from 'form-data'; // <-- Add this import
 
-// Initialize OpenAI client with Gemini API key and base URL
 const openai = new OpenAI({
     apiKey: process.env.GEMINI_API_KEY,
     baseURL: "https://generativelanguage.googleapis.com/v1beta/openai/"
 });
 
-/**
- * Controller to generate an article using OpenAI's Gemini model.
- * Saves the generated content to the database, and manages free usage count.
- */
 export const genrateArticle = async (req, res) => {
     try {
-        const { userId } = req.auth;
+        const { userId } = req.auth();
         const { prompt, length } = req.body;
         const plan = req.plan;
         const free_usage = req.free_usage;
 
-        // Free users limitations check
         if (plan !== 'premium' && free_usage >= 1000) {
-            return res.json({
+            return res.status(403).json({
                 success: false,
                 message: 'Limit reached. Upgrade to continue.'
             });
         }
 
-        // Request article generation from OpenAI's Gemini
         const response = await openai.chat.completions.create({
             model: "gemini-2.0-flash",
-            messages: [
-                {
-                    role: "user",
-                    content: prompt,
-                },
-            ],
-            temperature: 0,
-            max_tokens: length,
+            messages: [{ role: "user", content: prompt }],
+            temperature: 0.7,
+            max_tokens: length || 1000,
         });
 
-        // Extract generated article content
         const content = response?.choices?.[0]?.message?.content || '';
 
-        // Store creation in the database
         await sql`
             INSERT INTO creation (user_id, prompt, content, type)
             VALUES (${userId}, ${prompt}, ${content}, 'article')
         `;
 
-        // Update free usage count for non-premium users
         if (plan !== "premium") {
             await clerkClient.users.updateUser(userId, {
-                privateMetadata: {
-                    free_usage: free_usage + 1
-                }
+                privateMetadata: { free_usage: free_usage + 1 }
             });
         }
 
-        res.json({
-            success: true,
-            content
-        });
+        res.json({ success: true, content });
 
     } catch (error) {
-        console.log(error.message);
-        res.json({ success: false, message: error.message });
+        console.error('Article Generation Error:', error.message);
+        res.status(500).json({ success: false, message: error.message });
     }
 };
 
-/**
- * Controller to generate a blog title using OpenAI's Gemini model.
- * Saves the result to the database and updates usage quotas.
- */
 export const genrateBlotTitle = async (req, res) => {
     try {
-        const { userId } = req.auth;
+        const { userId } = req.auth();
         const { prompt } = req.body;
         const plan = req.plan;
         const free_usage = req.free_usage;
 
-        // Free users limitations check
         if (plan !== 'premium' && free_usage >= 1000) {
-            return res.json({
+            return res.status(403).json({
                 success: false,
                 message: 'Limit reached. Upgrade to continue.'
             });
         }
 
-        // Request blog title generation
         const response = await openai.chat.completions.create({
             model: "gemini-2.0-flash",
-            messages: [
-                {
-                    role: "user",
-                    content: prompt,
-                },
-            ],
-            temperature: 0,
+            messages: [{ role: "user", content: prompt }],
+            temperature: 0.7,
             max_tokens: 100,
         });
 
-        // Extract generated blog title
         const content = response?.choices?.[0]?.message?.content || '';
 
-        // Store creation in the database
         await sql`
             INSERT INTO creation (user_id, prompt, content, type)
             VALUES (${userId}, ${prompt}, ${content}, 'blog-title')
         `;
 
-        // Update free usage count for non-premium users
         if (plan !== "premium") {
             await clerkClient.users.updateUser(userId, {
-                privateMetadata: {
-                    free_usage: free_usage + 1
-                }
+                privateMetadata: { free_usage: free_usage + 1 }
             });
         }
 
-        res.json({
-            success: true,
-            content
-        });
+        res.json({ success: true, content });
 
     } catch (error) {
-        console.log(error.message);
-        res.json({ success: false, message: error.message });
+        console.error('Blog Title Generation Error:', error.message);
+        res.status(500).json({ success: false, message: error.message });
     }
 };
 
-/**
- * Controller to generate an AI image using ClipDrop API and uploads to Cloudinary.
- * Only available for premium users.
- */
 export const genrateImage = async (req, res) => {
     try {
-        const { userId } = req.auth;
+        const { userId } = req.auth();
         const { prompt, publish } = req.body;
         const plan = req.plan;
 
-        // Only premium users can generate images
         if (plan !== 'premium') {
-            return res.json({
+            return res.status(403).json({
                 success: false,
-                message: 'This Feature is only available for premuim Subscriptions'
+                message: 'This feature is only available for premium users.'
             });
         }
 
-        // Prepare form data for ClipDrop image generation API
-        const form = new FormData();
-        form.append('prompt', prompt);
+        const encodedPrompt = encodeURIComponent(prompt);
+        const imageUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}?width=1024&height=1024&model=flux&nologo=true&enhance=true`;
 
-        // Call ClipDrop API to generate image
-        const { data } = await axios.post(
-            'https://clipdrop-api.co/text-to-image/v1',
-            form,
-            {
-                headers: {
-                    'x-api-key': process.env.CLIPDROP_API_KEY,
-                    ...form.getHeaders(), // Ensure proper form headers
-                },
-                responseType: 'arraybuffer'
-            }
-        );
+        const response = await axios.get(imageUrl, {
+            responseType: 'arraybuffer',
+            timeout: 120000
+        });
 
-        // Convert image buffer to Base64 and upload to Cloudinary
-        const base64Image = `data:image/png;base64,${Buffer.from(data, 'binary').toString('base64')}`;
-       
+        if (!response.data) {
+            throw new Error("Failed to download generated image");
+        }
+
+        const base64Image = `data:image/jpeg;base64,${Buffer.from(response.data).toString('base64')}`;
+
         const uploadResult = await cloudinary.uploader.upload(base64Image, {
             folder: 'creavix/images',
             public_id: `${userId}-${Date.now()}`,
         });
 
-        // Save image info to database (using uploadResult.secure_url as content)
         await sql`
             INSERT INTO creation (user_id, prompt, content, type, publish)
             VALUES (${userId}, ${prompt}, ${uploadResult.secure_url}, 'image', ${publish ?? false})
         `;
 
+        res.json({ success: true, content: uploadResult.secure_url });
+
+    } catch (error) {
+        console.error('Image Generation Error:', error.message);
+        
+        let errorMessage = 'Failed to generate image';
+        let statusCode = 500;
+
+        if (axios.isAxiosError(error)) {
+            if (error.code === 'ECONNABORTED') {
+                errorMessage = 'Image generation timed out. Please try a simpler prompt.';
+                statusCode = 504;
+            } else if (error.response) {
+                statusCode = error.response.status;
+                errorMessage = `Image generation failed: HTTP ${statusCode}`;
+            }
+        }
+
+        res.status(statusCode).json({ success: false, message: errorMessage });
+    }
+};
+
+export const removeImageBackground = async (req, res) => {
+    try {
+        const { userId } = req.auth();
+        
+        if (!req.file) {
+            return res.status(400).json({
+                success: false,
+                message: 'No image file provided'
+            });
+        }
+
+        const base64Image = `data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}`;
+
+        const uploadResult = await cloudinary.uploader.upload(base64Image, {
+            folder: 'creavix/temp',
+            public_id: `temp-${userId}-${Date.now()}`
+        });
+
+        const transformedUrl = cloudinary.url(uploadResult.public_id, {
+            effect: 'background_removal',
+            format: 'png'
+        });
+
+        const response = await axios.get(transformedUrl, {
+            responseType: 'arraybuffer',
+            timeout: 60000
+        });
+
+        const processedBase64 = `data:image/png;base64,${Buffer.from(response.data).toString('base64')}`;
+        
+        const finalResult = await cloudinary.uploader.upload(processedBase64, {
+            format: 'png',
+            folder: 'creavix/bg-removed',
+            public_id: `${userId}-${Date.now()}`
+        });
+
+        await cloudinary.uploader.destroy(uploadResult.public_id);
+
+        await sql`
+            INSERT INTO creation (user_id, prompt, content, type)
+            VALUES (${userId}, 'Background Removal', ${finalResult.secure_url}, 'bg-removal')
+        `;
+
+        res.json({ success: true, content: finalResult.secure_url });
+
+    } catch (error) {
+        console.error('Background Removal Error:', error.message);
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+export const removeObjectFromImage = async (req, res) => {
+    try {
+        const { userId } = req.auth();
+        const plan = req.plan;
+        const { object } = req.body;
+
+        if (plan !== 'premium') {
+            return res.status(403).json({
+                success: false,
+                message: 'This feature is only available for premium users.'
+            });
+        }
+
+        if (!req.file) {
+            return res.status(400).json({
+                success: false,
+                message: 'No image file provided'
+            });
+        }
+
+        const base64Image = `data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}`;
+
+        const uploadResult = await cloudinary.uploader.upload(base64Image, {
+            folder: 'creavix/object-removals',
+            public_id: `${userId}-${Date.now()}`
+        });
+
+        const processedUrl = cloudinary.url(uploadResult.public_id, {
+            transformation: [{
+                effect: `gen_remove:prompt_${object}`,
+            }]
+        });
+
+        const response = await axios.get(processedUrl, {
+            responseType: 'arraybuffer',
+            timeout: 60000
+        });
+
+        const processedBase64 = `data:image/jpeg;base64,${Buffer.from(response.data).toString('base64')}`;
+
+        const finalResult = await cloudinary.uploader.upload(processedBase64, {
+            folder: 'creavix/object-removals',
+            public_id: `${userId}-final-${Date.now()}`
+        });
+
+        await cloudinary.uploader.destroy(uploadResult.public_id);
+
+        await sql`
+            INSERT INTO creation (user_id, prompt, content, type)
+            VALUES (${userId}, ${`Remove ${object}`}, ${finalResult.secure_url}, 'object-removal')
+        `;
+
+        res.json({ success: true, content: finalResult.secure_url });
+
+    } catch (error) {
+        console.error('Object Removal Error:', error.message);
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+export const reviewResume = async (req, res) => {
+    try {
+        const { userId } = req.auth();
+        const { jobDescription } = req.body;
+        const plan = req.plan;
+        const free_usage = req.free_usage;
+
+        if (plan !== 'premium' && free_usage >= 1000) {
+            return res.status(403).json({
+                success: false,
+                message: 'Limit reached. Upgrade to continue.'
+            });
+        }
+
+        if (!req.file) {
+            return res.status(400).json({
+                success: false,
+                message: 'Resume file is required'
+            });
+        }
+
+        const resumeText = req.file.buffer.toString('utf-8');
+
+        if (!resumeText || resumeText.trim().length < 50) {
+            return res.status(400).json({
+                success: false,
+                message: 'Resume content is too short.'
+            });
+        }
+
+        const prompt = `You are an expert resume reviewer and career coach. Analyze the following resume and provide detailed, actionable feedback.
+
+${jobDescription ? `Target Job Description:\n${jobDescription}\n\n` : ''}Resume Content:\n${resumeText}
+
+Please provide a comprehensive review covering:
+1. Overall Impression (strengths and weaknesses)
+2. Format and Structure
+3. Content Quality (achievements, quantifiable results)
+4. Keywords and ATS Optimization
+${jobDescription ? '5. Alignment with Target Job' : ''}
+6. Specific Improvements (with before/after examples)
+7. Final Score (out of 10)
+
+Be constructive, specific, and actionable in your feedback.`;
+
+        const response = await openai.chat.completions.create({
+            model: "gemini-2.0-flash",
+            messages: [{ role: "user", content: prompt }],
+            temperature: 0.7,
+            max_tokens: 2000,
+        });
+
+        const content = response?.choices?.[0]?.message?.content || '';
+
+        await sql`
+            INSERT INTO creation (user_id, prompt, content, type)
+            VALUES (${userId}, ${'Resume Review: ' + (jobDescription ? 'with job description' : 'general')}, ${content}, 'resume-review')
+        `;
+
+        if (plan !== "premium") {
+            await clerkClient.users.updateUser(userId, {
+                privateMetadata: { free_usage: free_usage + 1 }
+            });
+        }
+
         res.json({
             success: true,
-            content: uploadResult.secure_url
+            content,
+            extractedText: resumeText.substring(0, 200) + '...'
         });
 
     } catch (error) {
-        console.log(error.message);
-        res.json({ success: false, message: error.message });
+        console.error('Resume Review Error:', error.message);
+        res.status(500).json({ success: false, message: error.message });
     }
 };
