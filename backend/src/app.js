@@ -1,4 +1,10 @@
-// ... existing imports
+import express from 'express';
+import cors from 'cors';
+import 'dotenv/config';
+import { clerkMiddleware } from '@clerk/express'
+import aiRouter from './routes/ai.routes.js';
+import connectCloudinary from './storage/cloudinary.storage.js';
+import userRouter from './routes/user.routes.js';   
 
 const app = express();
 
@@ -10,18 +16,10 @@ app.use(cors({
 }));
 
 app.use(express.json());
+app.use(clerkMiddleware()) // ✅ Only use clerkMiddleware globally
 
-// 💡 NEW: Middleware to handle OPTIONS requests and prevent Clerk's redirect
-app.use((req, res, next) => {
-    // If it's a preflight request, respond with 200 OK immediately.
-    if (req.method === 'OPTIONS') {
-        return res.sendStatus(200);
-    }
-    // For all other requests, continue to the next middleware (Clerk)
-    next();
-});
-
-app.use(clerkMiddleware()); // Now this only runs for non-OPTIONS requests
+// ❌ REMOVE THIS LINE - Don't use requireAuth globally!
+// app.use(requireAuth()) 
 
 app.use('/api/ai', aiRouter);
 app.use('/api/user', userRouter);
