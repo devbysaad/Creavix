@@ -17,7 +17,7 @@ export const genrateArticle = async (req, res) => {
         const plan = req.plan;
         const free_usage = req.free_usage;
 
-        if (plan !== 'premium' && free_usage >= 1000) {
+        if (free_usage >= 1000) {
             return res.status(403).json({
                 success: false,
                 message: 'Limit reached. Upgrade to continue.'
@@ -38,11 +38,9 @@ export const genrateArticle = async (req, res) => {
             VALUES (${userId}, ${prompt}, ${content}, 'article')
         `;
 
-        if (plan !== "premium") {
-            await clerkClient.users.updateUser(userId, {
-                privateMetadata: { free_usage: free_usage + 1 }
-            });
-        }
+        await clerkClient.users.updateUser(userId, {
+            privateMetadata: { free_usage: free_usage + 1 }
+        });
 
         res.json({ success: true, content });
 
@@ -59,7 +57,7 @@ export const genrateBlotTitle = async (req, res) => {
         const plan = req.plan;
         const free_usage = req.free_usage;
 
-        if (plan !== 'premium' && free_usage >= 1000) {
+        if (free_usage >= 1000) {
             return res.status(403).json({
                 success: false,
                 message: 'Limit reached. Upgrade to continue.'
@@ -80,11 +78,9 @@ export const genrateBlotTitle = async (req, res) => {
             VALUES (${userId}, ${prompt}, ${content}, 'blog-title')
         `;
 
-        if (plan !== "premium") {
-            await clerkClient.users.updateUser(userId, {
-                privateMetadata: { free_usage: free_usage + 1 }
-            });
-        }
+        await clerkClient.users.updateUser(userId, {
+            privateMetadata: { free_usage: free_usage + 1 }
+        });
 
         res.json({ success: true, content });
 
@@ -99,13 +95,6 @@ export const genrateImage = async (req, res) => {
         const { userId } = req.auth();
         const { prompt, publish } = req.body;
         const plan = req.plan;
-
-        if (plan !== 'premium') {
-            return res.status(403).json({
-                success: false,
-                message: 'This feature is only available for premium users.'
-            });
-        }
 
         const encodedPrompt = encodeURIComponent(prompt);
         const imageUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}?width=1024&height=1024&model=flux&nologo=true&enhance=true`;
@@ -210,13 +199,6 @@ export const removeObjectFromImage = async (req, res) => {
         const plan = req.plan;
         const { object } = req.body;
 
-        if (plan !== 'premium') {
-            return res.status(403).json({
-                success: false,
-                message: 'This feature is only available for premium users.'
-            });
-        }
-
         if (!req.file) {
             return res.status(400).json({
                 success: false,
@@ -271,7 +253,7 @@ export const reviewResume = async (req, res) => {
         const plan = req.plan;
         const free_usage = req.free_usage;
 
-        if (plan !== 'premium' && free_usage >= 1000) {
+        if (free_usage >= 1000) {
             return res.status(403).json({
                 success: false,
                 message: 'Limit reached. Upgrade to continue.'
@@ -323,11 +305,9 @@ Be constructive, specific, and actionable in your feedback.`;
             VALUES (${userId}, ${'Resume Review: ' + (jobDescription ? 'with job description' : 'general')}, ${content}, 'resume-review')
         `;
 
-        if (plan !== "premium") {
-            await clerkClient.users.updateUser(userId, {
-                privateMetadata: { free_usage: free_usage + 1 }
-            });
-        }
+        await clerkClient.users.updateUser(userId, {
+            privateMetadata: { free_usage: free_usage + 1 }
+        });
 
         res.json({
             success: true,
